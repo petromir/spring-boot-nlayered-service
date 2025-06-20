@@ -1,0 +1,15 @@
+FROM flyway/flyway:10.7
+
+# Ensure working directory
+WORKDIR /app
+
+# Copy project migrations
+COPY src/main/resources/db-migrations/db/changelog/* .
+
+# Use environment variables for credentials
+ENV FLYWAY_USERNAME=${DB_USERNAME}
+ENV FLYWAY_PASSWORD=${DB_PASSWORD}
+ENV FLYWAY_URL=${DB_URL}
+
+# Run migrations using environment variables
+CMD ["flyway", "--url=${FLYWAY_URL}", "--user=${FLYWAY_USERNAME}", "--password=${FLYWAY_PASSWORD}", "migrate info"]

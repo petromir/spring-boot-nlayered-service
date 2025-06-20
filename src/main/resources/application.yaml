@@ -1,0 +1,110 @@
+# Main
+spring:
+  config:
+    import: optional:classpath:.env[.properties]
+  application:
+    name: spring-boot-nlayered-service
+  mvc:
+    servlet:
+      path: /api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE}
+  main:
+    banner-mode: "off"
+    web-application-type: servlet
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+    serialization:
+      # Allows a human-readable date format
+      write-dates-as-timestamps: false
+    mapper:
+      accept-case-insensitive-enums: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME},
+    password: ${DB_PASSWORD},
+    hikari:
+      poolName: SpringBootNlayeredServiceCP
+      maximum-pool-size: ${DB_CONNECTION_POOL_MAXIMUM_SIZE}
+      minimum-idle: ${DB_CONNECTION_POOL_MINIMUM_IDLE}
+      idle-timeout: ${DB_CONNECTION_POOL_IDLE_TIMEOUT}
+      max-lifetime: ${DB_CONNECTION_POOL_MAX_LIFETIME}
+      leak-detection-threshold: ${DB_CONNECTION_POOL_LEAK_DETECTION_THRESHOLD}
+
+server:
+  port: ${SERVER_PORT}
+  http2:
+    enabled: true
+  compression:
+    enabled: on
+    mime-types: text/html,text/xml,text/plain,text/css,text/csv,application/javascript,application/json
+    min-response-size: 1024
+
+logging:
+  pattern:
+    console: '[%thread] %highlight(%-5level) %cyan(%class{0}) - %msg%n%ex'
+  level:
+    com.petromirdzhunev: INFO
+    org.jooq.tools.LoggerListener: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  docker:
+    compose:
+      start:
+        log-level: trace
+      file: ./docker/docker-compose.yaml
+      lifecycle-management: start_only
+
+---
+spring:
+  config:
+    activate:
+      on-profile: liquibase
+  liquibase:
+    # db hostname is added to /etc/hosts and should be automatically resolved in CI/CD environment
+    url: ${DB_URL}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+---
+spring:
+  config:
+    activate:
+      on-profile: flyway
+  flyway:
+    # db hostname is added to /etc/hosts and should be automatically resolved in CI/CD environment
+    url: ${DB_URL}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    fail-on-missing-locations: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: ci-cd
+  docker:
+    compose:
+      enabled: false # Disable docker-compose as dependencies should be initialized in a native way by CI/CD environment
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev,stage,prod
+  docker:
+    compose:
+      enabled: false # Disable docker-compose as dependencies should be initialized in a native way by CI/CD environment
+  liquibase:
+    enabled: false
+  flyway:
+    enabled: false

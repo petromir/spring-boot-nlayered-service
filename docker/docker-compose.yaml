@@ -1,0 +1,29 @@
+version: '3.9'
+services:
+  db:
+    container_name: db
+    restart: always
+    image: postgres:16-alpine
+    command: [ "postgres", "-c", "log_statement=all" ]
+    ports:
+      - "5431:5432" # host_port:container_port
+    networks:
+      - database_private
+      - database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=spring_boot_nlayered_service
+    healthcheck:
+      test: pg_isready -U root -d password
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  database_private:
+    external: true
+  database:
+    external: true
+    name: database

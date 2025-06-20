@@ -1,0 +1,17 @@
+FROM liquibase/liquibase:4.26-alpine
+
+# Change directory to project structure
+WORKDIR /app
+
+# Copy migrations and changelog (adjust paths if needed)
+COPY src/main/resources/db/changelog/* .
+
+# Use environment variables for database credentials and connection
+ENV DB_USERNAME=root
+ENV DB_PASSWORD=postgres
+ENV DB_URL="jdbc:postgresql://db:5432/spring_boot_nlayered_service"
+
+USER liquibase
+
+# Run Liquibase with environment variables
+CMD ["bash", "-c", "liquibase --changeLogFile=db.changelog-master.yaml --driver=org.postgresql.Driver --username=${DB_USERNAME} --password=${DB_PASSWORD} --url=${DB_URL} update"]
