@@ -1,7 +1,7 @@
 # Main
 spring:
   config:
-    import: optional:classpath:.env[.properties]
+    import: optional:classpath:.env.test[.properties]
   application:
     name: spring-boot-nlayered-service
   mvc:
@@ -56,6 +56,10 @@ server:
     enabled: on
     mime-types: text/html,text/xml,text/plain,text/css,text/csv,application/javascript,application/json
     min-response-size: 1024
+
+mock:
+  http-server:
+    port: ${MOCK_HTTP_SERVER_PORT}
 
 logging:
   pattern:

@@ -2,7 +2,7 @@ package com.petromirdzhunev;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.petromirdzhunev.cucumber.spring.beans.MockHttpServer;
+import com.petromirdzhunev.cucumber.spring.beans.MockHttpServerWrapper;
 import com.petromirdzhunev.cucumber.spring.beans.PostgreSQLDatabaseTruncator;
 
 import io.cucumber.java.Before;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class CucumberSpringConfiguration {
 
 	private final PostgreSQLDatabaseTruncator postgreSQLDatabaseTruncator;
-	private final MockHTTPServerWrapper mockHttpServerWrapper;
+	private final MockHttpServerWrapper mockHttpServerWrapper;
 
 	@Before
 	public void beforeScenario() {
