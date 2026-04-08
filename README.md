@@ -4,8 +4,8 @@ A production-ready example of Spring Boot project using N-layered architecture.
 
 Layers are virtual separations within an application that organize its different parts, such as the presentation layer (UI), the business logic layer, and the data access layer.
 
-## Status
-**The project is still in an early phase!**
+> [!WARNING]
+> Under active development 🚧
 
 ## Environment
 

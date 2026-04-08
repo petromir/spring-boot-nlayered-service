@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.5</version>
+        <version>4.0.5</version>
         <relativePath/> <!-- lookup parent from a repository -->
     </parent>
 
@@ -13,7 +13,7 @@
     <artifactId>spring-boot-nlayered-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>spring-boot-nlayered-service</name>
-    <description>An example of Spring Boot N-Layered service</description>
+    <description>An example of Spring Boot service using N-Layered architecture</description>
 
     <properties>
         <java.version>21</java.version>
