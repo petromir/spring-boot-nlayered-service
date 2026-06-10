@@ -13,9 +13,10 @@ build:
 	mvnd -B clean package -Dsmartbuilder.profiling=true
 
 generate-code:
-	// Clean
+	# Delete old
 	rm -rf src/main/java/com/petromirdzhunev/controller/*
 	rm -rf src/main/java/com/petromirdzhunev/repository/jooq/*
+	# Generate new
 	mvnd -B clean generate-sources -P generate-code
 	# Putting back the files to git
 	git add src/main/java/com/petromirdzhunev/controller/*

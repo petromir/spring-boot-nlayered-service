@@ -15,9 +15,6 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: false
-    serialization:
-      # Allows a human-readable date format
-      write-dates-as-timestamps: false
     mapper:
       accept-case-insensitive-enums: true
   datasource:
