@@ -128,43 +128,48 @@
                         <groupId>org.openapitools</groupId>
                         <artifactId>openapi-generator-maven-plugin</artifactId>
                         <version>7.23.0</version>
+                        <configuration>
+                            <inputSpecRootDirectory>${project.basedir}/homie-api.yaml</inputSpecRootDirectory>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <output>${project.basedir}</output>
+                            <apiPackage>com.petromirdzhunev.controller</apiPackage>
+                            <modelPackage>com.petromirdzhunev.controller.model</modelPackage>
+                            <typeMappings>
+                                <typeMapping>string+date-time=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>LocalDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                            <configOptions>
+                                <resolveFully>true</resolveFully>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <documentationProvider>none</documentationProvider>
+                                <annotationLibrary>none</annotationLibrary>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <openApiNullable>false</openApiNullable>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useResponseEntity>false</useResponseEntity>
+                                <useTags>true</useTags>
+
+                            </configOptions>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>generate-api</id>
+                                <id>generate-users-api</id>
                                 <goals>
                                     <goal>generate</goal>
                                 </goals>
                                 <configuration>
-                                    <inputSpecRootDirectory>${project.basedir}</inputSpecRootDirectory>
-                                    <generatorName>spring</generatorName>
-                                    <library>spring-boot</library>
-                                    <output>${project.basedir}</output>
-                                    <apiPackage>com.petromirdzhunev.controller</apiPackage>
-                                    <modelPackage>com.petromirdzhunev.controller.model</modelPackage>
-                                    <typeMappings>
-                                        <typeMapping>string+date-time=LocalDateTime</typeMapping>
-                                    </typeMappings>
-                                    <importMappings>
-                                        <importMapping>LocalDateTime=java.time.LocalDateTime</importMapping>
-                                    </importMappings>
-                                    <configOptions>
-                                        <resolveFully>true</resolveFully>
-                                        <interfaceOnly>true</interfaceOnly>
-                                        <useSpringBoot3>true</useSpringBoot3>
-                                        <documentationProvider>none</documentationProvider>
-                                        <annotationLibrary>none</annotationLibrary>
-                                        <hideGenerationTimestamp>true</hideGenerationTimestamp>
-                                        <openApiNullable>false</openApiNullable>
-                                        <skipDefaultInterface>true</skipDefaultInterface>
-                                        <useResponseEntity>false</useResponseEntity>
-                                        <useTags>true</useTags>
-
-                                    </configOptions>
-                                    <generateSupportingFiles>false</generateSupportingFiles>
-                                    <generateApiTests>false</generateApiTests>
-                                    <generateModelTests>false</generateModelTests>
-                                    <generateApiDocumentation>false</generateApiDocumentation>
-                                    <generateModelDocumentation>false</generateModelDocumentation>
+                                    <inputSpecRootDirectory>${project.basedir}/users-api.yaml</inputSpecRootDirectory>
+                                    <apiPackage>com.petromirdzhunev.users.controller.api</apiPackage>
+                                    <modelPackage>com.petromirdzhunev.users.controller.model</modelPackage>
                                 </configuration>
                             </execution>
                         </executions>
