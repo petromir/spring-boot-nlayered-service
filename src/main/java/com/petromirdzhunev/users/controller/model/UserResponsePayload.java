@@ -21,7 +21,7 @@ import jakarta.annotation.Generated;
  * UserResponsePayload
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.23.0")
 public class UserResponsePayload {
 
   private @Nullable String firstName;
@@ -63,7 +63,6 @@ public class UserResponsePayload {
     }
   }
 
-  @Valid
   private List<RolesEnum> roles = new ArrayList<>();
 
   public UserResponsePayload firstName(@Nullable String firstName) {

@@ -5,17 +5,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.petromirdzhunev.users.controller.api.UsersApi;
+import com.petromirdzhunev.users.controller.model.LoginRequestPayload;
+import com.petromirdzhunev.users.controller.model.LoginResponsePayload;
+import com.petromirdzhunev.users.controller.model.UserCreationRequestPayload;
+import com.petromirdzhunev.users.controller.model.UserCreationResponsePayload;
+import com.petromirdzhunev.users.controller.model.UserResponsePayload;
+import com.petromirdzhunev.users.entity.AuthUser;
+import com.petromirdzhunev.users.mapper.UserPayloadMapper;
+import com.petromirdzhunev.users.repository.AuthUserRepository;
 import com.petromirdzhunev.users.service.AuthenticationService;
 import com.petromirdzhunev.users.service.UserService;
-import com.petromirdzhunev.users.entity.AuthUser;
-import com.petromirdzhunev.users.entity.repository.AuthUserRepository;
-import com.petromirdzhunev.users.infra.http.server.controller.UsersApi;
-import com.petromirdzhunev.users.infra.http.server.controller.mapper.UserPayloadMapper;
-import com.petromirdzhunev.users.infra.http.server.controller.model.LoginRequestPayload;
-import com.petromirdzhunev.users.infra.http.server.controller.model.LoginResponsePayload;
-import com.petromirdzhunev.users.infra.http.server.controller.model.UserCreationRequestPayload;
-import com.petromirdzhunev.users.infra.http.server.controller.model.UserCreationResponsePayload;
-import com.petromirdzhunev.users.infra.http.server.controller.model.UserResponsePayload;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,4 +57,6 @@ public class UserController implements UsersApi {
 	public void deleteUser(final Long authUserId) {
 		authUserRepository.deleteAuthUser(authUserId);
 	}
+
+
 }

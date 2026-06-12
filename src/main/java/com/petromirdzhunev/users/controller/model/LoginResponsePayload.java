@@ -17,7 +17,7 @@ import jakarta.annotation.Generated;
  * LoginResponsePayload
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.23.0")
 public class LoginResponsePayload {
 
   private @Nullable String token;

@@ -21,7 +21,7 @@ import jakarta.annotation.Generated;
  * UserCreationRequestPayload
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.23.0")
 public class UserCreationRequestPayload {
 
   private String email;
@@ -67,7 +67,6 @@ public class UserCreationRequestPayload {
     }
   }
 
-  @Valid
   private List<RolesEnum> roles = new ArrayList<>();
 
   public UserCreationRequestPayload() {
@@ -94,7 +93,7 @@ public class UserCreationRequestPayload {
    * Get email
    * @return email
    */
-  @NotNull @Email
+  @NotNull @jakarta.validation.constraints.Email 
   @JsonProperty("email")
   public String getEmail() {
     return email;

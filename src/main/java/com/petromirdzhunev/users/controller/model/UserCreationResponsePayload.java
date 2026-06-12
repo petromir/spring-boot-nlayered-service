@@ -17,7 +17,7 @@ import jakarta.annotation.Generated;
  * UserCreationResponsePayload
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.23.0")
 public class UserCreationResponsePayload {
 
   private @Nullable Long id;

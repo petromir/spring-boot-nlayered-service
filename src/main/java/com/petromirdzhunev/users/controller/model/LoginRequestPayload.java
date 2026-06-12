@@ -17,7 +17,7 @@ import jakarta.annotation.Generated;
  * LoginRequestPayload
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.23.0")
 public class LoginRequestPayload {
 
   private String username;

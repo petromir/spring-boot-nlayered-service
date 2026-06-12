@@ -129,19 +129,24 @@
                         <artifactId>openapi-generator-maven-plugin</artifactId>
                         <version>7.23.0</version>
                         <configuration>
-                            <inputSpecRootDirectory>${project.basedir}/homie-api.yaml</inputSpecRootDirectory>
                             <generatorName>spring</generatorName>
                             <library>spring-boot</library>
                             <output>${project.basedir}</output>
-                            <apiPackage>com.petromirdzhunev.controller</apiPackage>
-                            <modelPackage>com.petromirdzhunev.controller.model</modelPackage>
                             <typeMappings>
                                 <typeMapping>string+date-time=LocalDateTime</typeMapping>
                             </typeMappings>
                             <importMappings>
                                 <importMapping>LocalDateTime=java.time.LocalDateTime</importMapping>
                             </importMappings>
+                            <schemaMappings>
+                                <!-- Prevent generating ProblemDetailResponsePayload class as ProblemDetail will be used -->
+                                <!-- Note that this still requires you to define the ProblemDetailResponsePayload in OpenAPI YAML file -->
+                                <schemaMapping>ProblemDetailResponsePayload=org.springframework.http.ProblemDetail</schemaMapping>
+                            </schemaMappings>
                             <configOptions>
+                                <!-- Replaces all $ref references with the actual schema content before generation. -->
+                                <!-- Safe with local $refs as schema names from components/schemas are preserved. -->
+                                <!-- External $refs are always replaced regardless of this option, which can cause unpredictable model names. -->
                                 <resolveFully>true</resolveFully>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useSpringBoot3>true</useSpringBoot3>
@@ -150,9 +155,9 @@
                                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
                                 <openApiNullable>false</openApiNullable>
                                 <skipDefaultInterface>true</skipDefaultInterface>
+                                <!-- Objects are returned directly instead of being wrapped in ResponseEntity -->
                                 <useResponseEntity>false</useResponseEntity>
                                 <useTags>true</useTags>
-
                             </configOptions>
                             <generateSupportingFiles>false</generateSupportingFiles>
                             <generateApiTests>false</generateApiTests>
@@ -167,7 +172,7 @@
                                     <goal>generate</goal>
                                 </goals>
                                 <configuration>
-                                    <inputSpecRootDirectory>${project.basedir}/users-api.yaml</inputSpecRootDirectory>
+                                    <inputSpec>${project.basedir}/users-api.yaml</inputSpec>
                                     <apiPackage>com.petromirdzhunev.users.controller.api</apiPackage>
                                     <modelPackage>com.petromirdzhunev.users.controller.model</modelPackage>
                                 </configuration>
