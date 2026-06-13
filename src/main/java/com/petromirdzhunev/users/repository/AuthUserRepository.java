@@ -1,7 +1,7 @@
 package com.petromirdzhunev.users.repository;
 
-import static com.inteldecisions.infra.db.jooq.Tables.AUTH_USER_DB_TABLE;
-import static com.inteldecisions.infra.db.jooq.Tables.AUTH_USER_ROLE_DB_TABLE;
+import static com.petromirdzhunev.users.repository.jooq.Tables.AUTH_USER_DB_TABLE;
+import static com.petromirdzhunev.users.repository.jooq.Tables.AUTH_USER_ROLE_DB_TABLE;
 import static org.jooq.Records.mapping;
 import static org.jooq.impl.DSL.multiset;
 import static org.jooq.impl.DSL.select;
