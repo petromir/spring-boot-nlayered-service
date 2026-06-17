@@ -34,4 +34,14 @@ public class AuthUser implements UserDetails {
 	public String getUsername() {
 		return this.email;
 	}
+
+	public AuthUser withoutPassword() {
+		return AuthUser.builder()
+		               .id(id)
+		               .email(email)
+		               .firstName(firstName)
+		               .lastName(lastName)
+		               .roles(roles)
+		               .build();
+	}
 }
