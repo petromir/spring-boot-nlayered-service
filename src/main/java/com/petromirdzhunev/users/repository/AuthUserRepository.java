@@ -43,7 +43,7 @@ public class AuthUserRepository {
 
 		if (roleIds.isEmpty()) {
 			throw new EntityNotFoundException(
-					"No auth user role found [codes=%s]".formatted(StringUtils.join(roleCodes, ",")));
+					"No auth user roles found [codes=%s]".formatted(StringUtils.join(roleCodes, ",")));
 		}
 
 		final Long authUserId = db.insertInto(AUTH_USER_DB_TABLE)
