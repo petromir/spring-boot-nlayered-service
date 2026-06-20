@@ -40,7 +40,7 @@ Cross-cutting concerns (`config`, `exception`) live at the root package and are 
 | **Controller Model** | `…/<module>/controller/model` | classes (generated)             | OpenAPI-generated request/response payloads. **Do not edit.**                                                                             |
 | **Service**          | `…/<module>/service`          | `@Service` / `@Component`       | Business logic, orchestration, security integration (e.g. `UserDetailsService`).                                                          |
 | **Repository**       | `…/<module>/repository`       | `@Component`                    | Data access via jOOQ `DSLContext`. No Spring Data repositories. Throws `EntityNotFound*` exceptions.                                      |
-| **jOOQ generated**   | `…/<module>/repository/jooq`  | generated                       | Table/record/keys classes generated from the DB schema. **Do not edit.**                                                                  |
+| **jOOQ generated**   | `…/<module>/repository/jooq`  | generated                       | Table/keys classes generated from the DB schema. **Do not edit.**                                                                         |
 | **Entity**           | `…/<module>/entity`           | `@Value`+`@Builder` / `record`  | Immutable domain objects. May implement Spring Security contracts (e.g. `UserDetails`).                                                   |
 | **Mapper**           | `…/<module>/mapper`           | `@Component`                    | Converts between generated payloads and entities. May use collaborators (e.g. `PasswordEncoder`).                                         |
 | **Config**           | `…/config`                    | `@Configuration` / `@Component` | Security, filters, exception handling, `@ConfigurationProperties`.                                                                        |
@@ -70,6 +70,7 @@ When adding a new bounded context (e.g. `orders`), follow the existing `users` m
    `controller/`, `service/`, `repository/`, `entity/`, `mapper/`
 2. Define the API in a new or existing OpenAPI YAML spec
 3. Run `make generate-code` to produce the `controller/api/*` interface and `controller/model/*` payloads
+   (adding a new spec file requires a new `<execution>` block in the `generate-code` Maven profile)
 4. Implement the **controller** — implements the generated `…Api` interface, thin orchestration only
 5. Implement the **service** — business logic, `@Service`/`@Component`, constructor injection
 6. Implement the **repository** — `@Component`, uses jOOQ `DSLContext` directly, throws
@@ -95,7 +96,7 @@ src/main/java/com/petromirdzhunev/
     ├── service/                              # UserService, AuthenticationService
     ├── repository/
     │   ├── AuthUserRepository.java           # jOOQ-based
-    │   └── jooq/                             # GENERATED — jOOQ table/record classes
+    │   └── jooq/                             # GENERATED — jOOQ table/keys classes
     ├── entity/                               # AuthUser, AuthUserRole (immutable)
     └── mapper/                               # UserPayloadMapper
 src/main/resources/
@@ -106,11 +107,12 @@ src/test/resources/
 ├── features/                                 # Cucumber .feature files
 ├── application.yaml                          # test profile config
 └── .env.test                                 # test env template (committed)
-users-api.yaml                                # OpenAPI 3.1 spec — source of truth for the API
-docker/                                       # docker-compose.yaml, application/, db-migrations/
-Makefile                                      # init-env, build, generate-code, clean-database
-.sdkmanrc                                     # Java/mvnd versions
-.env.example                                  # env template (committed; real .env is gitignored)
+users-api.yaml                                # OpenAPI 3.1 spec — source of truth for the API (root)
+docker/                                       # docker-compose.yaml, application/, db-migrations/ (root)
+docker/application/Dockerfile                 # app image build (multi-stage, layered JAR) (root)
+Makefile                                      # init-env, build, generate-code, clean-database (root)
+.sdkmanrc                                     # Java/mvnd versions (root)
+.env.example                                  # env template (committed; real .env is gitignored) (root)
 ```
 
 ## Build, Run & Code Generation
@@ -121,8 +123,10 @@ Makefile                                      # init-env, build, generate-code, 
 | Build           | `make build`           |
 | Run locally     | `mvnd spring-boot:run` |
 | Regenerate code | `make generate-code`   |
-| Run tests       | `mvn clean verify`     |
+| Run tests       | `mvn clean test`     |
 | Clean DB        | `make clean-database`  |
+
+**No lint/typecheck commands configured.** Code quality enforced via CI tests only.
 
 **Code generation profiles** (Maven `generate-code` profile):
 - **OpenAPI Generator** reads `users-api.yaml` → emits `…/controller/api/*` and `…/controller/model/*`.
@@ -159,7 +163,7 @@ mvn clean test                   # runs Cucumber tests (used by CI)
 
 - **Indentation:** tabs in Java files; 2-space YAML.
 - **Dependency injection:** constructor injection via Lombok `@RequiredArgsConstructor` with `final`
-  fields. Do not use field `@Autowired`.
+  fields. No field injection (`@Autowired`, `@Inject`, etc.).
 - **Generated payloads** are mutable (OpenAPI generator) — use their fluent setters
   (e.g. `new LoginResponsePayload().token(...)`).
 - **Entities** are immutable (`@Value`+`@Builder` or `record`).
@@ -179,7 +183,15 @@ mvn clean test                   # runs Cucumber tests (used by CI)
 - **`BaseHttpExceptionHandler` is injected as a collaborator** into `GlobalAuthenticationEntryPoint`
   and `GlobalAccessDeniedHandler` to write `ProblemDetail` responses directly to the servlet output
   stream. Follow this pattern when adding new security error handlers.
-- **No comments** unless strictly necessary; the codebase is comment-light.
+- **Servlet path prefix:** `spring.mvc.servlet.path: /api` — all controller endpoints are under `/api`.
+- **Public endpoints:** `/api/users/login`, `/health`, `/metrics`, `/prometheus` are unauthenticated.
+  Add new public endpoints to both `SecurityConfig.securityFilterChain` AND the regex in
+  `JwtAuthenticationFilter.shouldNotFilter` (currently `^/api(?!/users/login$).*$`).
+- **Jackson:** `fail-on-unknown-properties: false` — extra fields in request payloads are ignored.
+- **`@Transactional`:** use on service methods when multiple DB operations must succeed or fail together.
+  Repositories are not transactional by default.
+- **No comments** unless strictly necessary; the codebase is comment-light (one `// FIXME` exists in
+  `UserPayloadMapper:39` — pending fix).
 
 ## Do-Not-Edit (generated code)
 
@@ -200,7 +212,7 @@ To change jOOQ classes: edit the DB schema via a new Liquibase migration → `ma
 - `application.yaml` is multi-document with profiles: `local`, `liquibase`, `flyway`, `ci-cd`,
   `dev,stage,prod`.
 - **Docker networks:** the compose file uses external networks (`database_private`, `database`). These
-  must exist before running the app locally, using `make init-env` command
+  must exist before running the app locally, using `make init-env` command.
 
 ## CI
 
