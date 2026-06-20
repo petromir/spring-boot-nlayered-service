@@ -16,7 +16,7 @@
     <description>An example of Spring Boot service using N-Layered architecture</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
     </properties>
 
     <dependencyManagement>
