@@ -6,7 +6,7 @@ service using **N-Layered architecture**.
 ## Tech Stack
 
 - **Language:** Java 25 (SDKMAN pins `25.0.3-librca` in `.sdkmanrc`; CI uses JDK 25). The
-  Maven compiler `java.version` property is set to `21`.
+  Maven compiler `java.version` property is set to `25`.
 - **Framework:** Spring Boot 4.0.6 (Web, Security, Validation, jOOQ)
 - **Build:** Maven via `mvnd` 1.0.5 (Maven Daemon). Use `mvnd` locally; `mvn` in CI.
 - **Data access:** jOOQ (type-safe SQL, code generated from the DB schema)
@@ -33,18 +33,18 @@ Cross-cutting concerns (`config`, `exception`) live at the root package and are 
 
 ### Layer responsibilities
 
-| Layer | Package | Stereotype | Responsibility |
-|-------|---------|-----------|----------------|
-| **Controller** | `…/<module>/controller` | `@RestController` | Implements generated `…Api` interface. Thin: orchestrates service/mapper/repository calls, returns generated payloads. No business logic. |
-| **Controller API** | `…/<module>/controller/api` | interface (generated) | OpenAPI-generated REST interfaces with `@RequestMapping`/`@ResponseStatus`. **Do not edit.** |
-| **Controller Model** | `…/<module>/controller/model` | classes (generated) | OpenAPI-generated request/response payloads. **Do not edit.** |
-| **Service** | `…/<module>/service` | `@Service` / `@Component` | Business logic, orchestration, security integration (e.g. `UserDetailsService`). |
-| **Repository** | `…/<module>/repository` | `@Component` | Data access via jOOQ `DSLContext`. No Spring Data repositories. Throws `EntityNotFound*` exceptions. |
-| **jOOQ generated** | `…/<module>/repository/jooq` | generated | Table/record/keys classes generated from the DB schema. **Do not edit.** |
-| **Entity** | `…/<module>/entity` | `@Value`+`@Builder` / `record` | Immutable domain objects. May implement Spring Security contracts (e.g. `UserDetails`). |
-| **Mapper** | `…/<module>/mapper` | `@Component` | Converts between generated payloads and entities. May use collaborators (e.g. `PasswordEncoder`). |
-| **Config** | `…/config` | `@Configuration` / `@Component` | Security, filters, exception handling, `@ConfigurationProperties`. |
-| **Exception** | `…/exception` | `RuntimeException` subclasses | Domain exceptions, translated to HTTP `ProblemDetail` (RFC 7807) by `BaseHttpExceptionHandler`. |
+| Layer                | Package                       | Stereotype                      | Responsibility                                                                                                                            |
+|----------------------|-------------------------------|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| **Controller**       | `…/<module>/controller`       | `@RestController`               | Implements generated `…Api` interface. Thin: orchestrates service/mapper/repository calls, returns generated payloads. No business logic. |
+| **Controller API**   | `…/<module>/controller/api`   | interface (generated)           | OpenAPI-generated REST interfaces with `@RequestMapping`/`@ResponseStatus`. **Do not edit.**                                              |
+| **Controller Model** | `…/<module>/controller/model` | classes (generated)             | OpenAPI-generated request/response payloads. **Do not edit.**                                                                             |
+| **Service**          | `…/<module>/service`          | `@Service` / `@Component`       | Business logic, orchestration, security integration (e.g. `UserDetailsService`).                                                          |
+| **Repository**       | `…/<module>/repository`       | `@Component`                    | Data access via jOOQ `DSLContext`. No Spring Data repositories. Throws `EntityNotFound*` exceptions.                                      |
+| **jOOQ generated**   | `…/<module>/repository/jooq`  | generated                       | Table/record/keys classes generated from the DB schema. **Do not edit.**                                                                  |
+| **Entity**           | `…/<module>/entity`           | `@Value`+`@Builder` / `record`  | Immutable domain objects. May implement Spring Security contracts (e.g. `UserDetails`).                                                   |
+| **Mapper**           | `…/<module>/mapper`           | `@Component`                    | Converts between generated payloads and entities. May use collaborators (e.g. `PasswordEncoder`).                                         |
+| **Config**           | `…/config`                    | `@Configuration` / `@Component` | Security, filters, exception handling, `@ConfigurationProperties`.                                                                        |
+| **Exception**        | `…/exception`                 | `RuntimeException` subclasses   | Domain exceptions, translated to HTTP `ProblemDetail` (RFC 7807) by `BaseHttpExceptionHandler`.                                           |
 
 ### Rules to follow
 
@@ -57,8 +57,28 @@ Cross-cutting concerns (`config`, `exception`) live at the root package and are 
   keyword) or Java `record`. Provide factory helpers like `withoutPassword()` when needed.
 - **Never expose entities directly as HTTP responses** — always map to a generated payload via a mapper.
 - **Never expose or log secrets/JWT keys.** Secrets come from env vars (`.env`, gitignored).
-- **Add new exceptions as `RuntimeException` subclasses** under `…/exception` and handle them in
-  `BaseHttpExceptionHandler` with `@ExceptionHandler`, returning `ProblemDetail`.
+- **Add new exceptions as `RuntimeException` subclasses** under `…/exception` and add a corresponding
+  `@ExceptionHandler` in `BaseHttpExceptionHandler` returning `ProblemDetail` with the appropriate
+  HTTP status (e.g. `EntityAlreadyExistsException` → `HttpStatus.CONFLICT`; currently unhandled and
+  falls through to the generic handler, producing a 500 instead of 409 — pending fix).
+
+### Adding a new feature module
+
+When adding a new bounded context (e.g. `orders`), follow the existing `users` module structure:
+
+1. Create the package `com.petromirdzhunev/<module>/` with sub-packages:
+   `controller/`, `service/`, `repository/`, `entity/`, `mapper/`
+2. Define the API in a new or existing OpenAPI YAML spec
+3. Run `make generate-code` to produce the `controller/api/*` interface and `controller/model/*` payloads
+4. Implement the **controller** — implements the generated `…Api` interface, thin orchestration only
+5. Implement the **service** — business logic, `@Service`/`@Component`, constructor injection
+6. Implement the **repository** — `@Component`, uses jOOQ `DSLContext` directly, throws
+   `EntityNotFound*`/`EntityAlreadyExistsException`
+7. Define the **entity** — `@Value`+`@Builder` or `record`, immutable
+8. Implement the **mapper** — `@Component`, converts between controller model payloads and entities
+9. Add a new Liquibase migration in `db/changelog/` and include it in `db.changelog-master.yaml`,
+   then regenerate jOOQ code with `make generate-code`
+10. Add new exceptions under `com.petromirdzhunev.exception` and handlers in `BaseHttpExceptionHandler`
 
 ## Project Structure
 
@@ -95,21 +115,14 @@ Makefile                                      # init-env, build, generate-code, 
 
 ## Build, Run & Code Generation
 
-```bash
-# First-time setup: install Java/mvnd via SDKMAN and configure /etc/hosts
-make init-env
-
-# Build
-make build                       # mvnd -B clean package
-mvn clean package                # CI equivalent
-
-# Run (local). Spring Boot starts the Postgres container via docker-compose.
-mvnd spring-boot:run             # uses SPRING_PROFILES_ACTIVE=local from .env
-
-# Regenerate OpenAPI + jOOQ code after changing users-api.yaml or DB schema
-make generate-code               # deletes old generated code, regenerates, git adds it
-mvn generate-sources -P generate-code
-```
+| Task            | Command                |
+|-----------------|------------------------|
+| Init            | `make init-env`        |
+| Build           | `make build`           |
+| Run locally     | `mvnd spring-boot:run` |
+| Regenerate code | `make generate-code`   |
+| Run tests       | `mvn clean verify`     |
+| Clean DB        | `make clean-database`  |
 
 **Code generation profiles** (Maven `generate-code` profile):
 - **OpenAPI Generator** reads `users-api.yaml` → emits `…/controller/api/*` and `…/controller/model/*`.
@@ -150,7 +163,11 @@ mvn clean test                   # runs Cucumber tests (used by CI)
 - **Generated payloads** are mutable (OpenAPI generator) — use their fluent setters
   (e.g. `new LoginResponsePayload().token(...)`).
 - **Entities** are immutable (`@Value`+`@Builder` or `record`).
+- **Lombok `@Value` fields are package-private** — omit the `private` keyword entirely
+  (e.g. `Long id;` not `private Long id;`). `@Value` already generates `private final`.
 - **Static imports** for jOOQ `Tables.*` constants and `DSL.*` helpers at the top of repositories.
+- **jOOQ records are not generated** (`<records>false</records>` in pom.xml). Only `Table`/`Field`/
+  `Key`/`Index` classes are emitted. Repositories use `DSLContext` + `Tables.*` + `mapping()` lambdas.
 - **Configuration properties** are records with `@ConfigurationProperties` (see `JwtProperties`),
   enabled via `@EnableConfigurationProperties` on the relevant `@Configuration`.
 - **Error responses** always use `org.springframework.http.ProblemDetail` (RFC 7807) with a
@@ -159,6 +176,9 @@ mvn clean test                   # runs Cucumber tests (used by CI)
   `schemaMappings` in `pom.xml`; do not generate a separate class for it.
 - **Security:** stateless JWT (`SessionCreationPolicy.STATELESS`); `JwtAuthenticationFilter` runs on
   `/api/**` except `/api/users/login`. Add new public endpoints to `SecurityConfig.securityFilterChain`.
+- **`BaseHttpExceptionHandler` is injected as a collaborator** into `GlobalAuthenticationEntryPoint`
+  and `GlobalAccessDeniedHandler` to write `ProblemDetail` responses directly to the servlet output
+  stream. Follow this pattern when adding new security error handlers.
 - **No comments** unless strictly necessary; the codebase is comment-light.
 
 ## Do-Not-Edit (generated code)
@@ -179,6 +199,8 @@ To change jOOQ classes: edit the DB schema via a new Liquibase migration → `ma
   `DB_PASSWORD`, `DB_CONNECTION_POOL_*`.
 - `application.yaml` is multi-document with profiles: `local`, `liquibase`, `flyway`, `ci-cd`,
   `dev,stage,prod`.
+- **Docker networks:** the compose file uses external networks (`database_private`, `database`). These
+  must exist before running the app locally, using `make init-env` command
 
 ## CI
 
