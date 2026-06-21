@@ -202,6 +202,7 @@
                         <artifactId>testcontainers-jooq-codegen-maven-plugin</artifactId>
                         <version>0.0.4</version>
                         <dependencies>
+                            <!-- The plugin uses quite old versions -->
                             <dependency>
                                 <groupId>org.testcontainers</groupId>
                                 <artifactId>testcontainers</artifactId>
