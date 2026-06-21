@@ -123,7 +123,7 @@ Makefile                                      # init-env, build, generate-code, 
 | Build           | `make build`           |
 | Run locally     | `mvnd spring-boot:run` |
 | Regenerate code | `make generate-code`   |
-| Run tests       | `mvn clean test`     |
+| Run tests       | `mvn clean test`       |
 | Clean DB        | `make clean-database`  |
 
 **No lint/typecheck commands configured.** Code quality enforced via CI tests only.
