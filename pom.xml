@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.5</version>
+        <version>4.1.0</version>
         <relativePath/> <!-- lookup parent from a repository -->
     </parent>
 
@@ -16,17 +16,37 @@
     <description>An example of Spring Boot service using N-Layered architecture</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-root</artifactId>
+                <version>0.13.0</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jooq</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
@@ -54,15 +74,17 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.petromirdzhunev</groupId>
-            <artifactId>andromeda-spring-boot-starter</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>test</scope>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+        </dependency>
+        <!-- Needed for JSON Processing -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
         </dependency>
     </dependencies>
 
@@ -105,44 +127,54 @@
                     <plugin>
                         <groupId>org.openapitools</groupId>
                         <artifactId>openapi-generator-maven-plugin</artifactId>
-                        <version>7.21.0</version>
+                        <version>7.23.0</version>
+                        <configuration>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <output>${project.basedir}</output>
+                            <typeMappings>
+                                <typeMapping>string+date-time=LocalDateTime</typeMapping>
+                            </typeMappings>
+                            <importMappings>
+                                <importMapping>LocalDateTime=java.time.LocalDateTime</importMapping>
+                            </importMappings>
+                            <schemaMappings>
+                                <!-- Prevent generating ProblemDetailResponsePayload class as ProblemDetail will be used -->
+                                <!-- Note that this still requires you to define the ProblemDetailResponsePayload in OpenAPI YAML file -->
+                                <schemaMapping>ProblemDetailResponsePayload=org.springframework.http.ProblemDetail</schemaMapping>
+                            </schemaMappings>
+                            <configOptions>
+                                <!-- Replaces all $ref references with the actual schema content before generation. -->
+                                <!-- Safe with local $refs as schema names from components/schemas are preserved. -->
+                                <!-- External $refs are always replaced regardless of this option, which can cause unpredictable model names. -->
+                                <resolveFully>true</resolveFully>
+                                <interfaceOnly>true</interfaceOnly>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <documentationProvider>none</documentationProvider>
+                                <annotationLibrary>none</annotationLibrary>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <openApiNullable>false</openApiNullable>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <!-- Objects are returned directly instead of being wrapped in ResponseEntity -->
+                                <useResponseEntity>false</useResponseEntity>
+                                <useTags>true</useTags>
+                            </configOptions>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>generate-api</id>
+                                <id>generate-users-api</id>
                                 <goals>
                                     <goal>generate</goal>
                                 </goals>
                                 <configuration>
-                                    <inputSpecRootDirectory>${project.basedir}/api/features</inputSpecRootDirectory>
-                                    <generatorName>spring</generatorName>
-                                    <library>spring-boot</library>
-                                    <output>${project.basedir}</output>
-                                    <apiPackage>com.petromirdzhunev.controller</apiPackage>
-                                    <modelPackage>com.petromirdzhunev.controller.model</modelPackage>
-                                    <typeMappings>
-                                        <typeMapping>string+date-time=LocalDateTime</typeMapping>
-                                    </typeMappings>
-                                    <importMappings>
-                                        <importMapping>LocalDateTime=java.time.LocalDateTime</importMapping>
-                                    </importMappings>
-                                    <configOptions>
-                                        <resolveFully>true</resolveFully>
-                                        <interfaceOnly>true</interfaceOnly>
-                                        <useSpringBoot3>true</useSpringBoot3>
-                                        <documentationProvider>none</documentationProvider>
-                                        <annotationLibrary>none</annotationLibrary>
-                                        <hideGenerationTimestamp>true</hideGenerationTimestamp>
-                                        <openApiNullable>false</openApiNullable>
-                                        <skipDefaultInterface>true</skipDefaultInterface>
-                                        <useResponseEntity>false</useResponseEntity>
-                                        <useTags>true</useTags>
-
-                                    </configOptions>
-                                    <generateSupportingFiles>false</generateSupportingFiles>
-                                    <generateApiTests>false</generateApiTests>
-                                    <generateModelTests>false</generateModelTests>
-                                    <generateApiDocumentation>false</generateApiDocumentation>
-                                    <generateModelDocumentation>false</generateModelDocumentation>
+                                    <inputSpec>${project.basedir}/users-api.yaml</inputSpec>
+                                    <apiPackage>com.petromirdzhunev.users.controller.api</apiPackage>
+                                    <modelPackage>com.petromirdzhunev.users.controller.model</modelPackage>
                                 </configuration>
                             </execution>
                         </executions>
@@ -170,15 +202,26 @@
                         <artifactId>testcontainers-jooq-codegen-maven-plugin</artifactId>
                         <version>0.0.4</version>
                         <dependencies>
+                            <!-- The plugin uses quite old versions -->
                             <dependency>
                                 <groupId>org.testcontainers</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>1.21.4</version>
+                                <artifactId>testcontainers</artifactId>
+                                <version>2.0.5</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.testcontainers</groupId>
+                                <artifactId>testcontainers-postgresql</artifactId>
+                                <version>2.0.5</version>
                             </dependency>
                             <dependency>
                                 <groupId>org.postgresql</groupId>
                                 <artifactId>postgresql</artifactId>
                                 <version>42.7.11</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.jooq</groupId>
+                                <artifactId>jooq-codegen</artifactId>
+                                <version>3.21.6</version>
                             </dependency>
                         </dependencies>
                         <executions>
@@ -191,7 +234,7 @@
                                 <configuration>
                                     <database>
                                         <type>POSTGRES</type>
-                                        <containerImage>postgres:17-alpine</containerImage>
+                                        <containerImage>postgres:18-alpine</containerImage>
                                         <username>${env.DB_USERNAME}</username>
                                         <password>${env.DB_PASSWORD}</password>
                                         <databaseName>decision_manager</databaseName>
@@ -230,7 +273,7 @@
                                                 <excludes>databasechangelog|databasechangeloglock</excludes>
                                             </database>
                                             <target>
-                                                <packageName>com.inteldecisions.infra.db.jooq</packageName>
+                                                <packageName>com.petromirdzhunev.users.repository.jooq</packageName>
                                                 <directory>src/main/java</directory>
                                             </target>
                                             <generate>

@@ -13,13 +13,14 @@ build:
 	mvnd -B clean package -Dsmartbuilder.profiling=true
 
 generate-code:
-	// Clean
-	rm -rf src/main/java/com/petromirdzhunev/controller/*
-	rm -rf src/main/java/com/petromirdzhunev/repository/jooq/*
+	# Delete old
+	rm -rf src/main/java/com/petromirdzhunev/*/controller/api/*
+	rm -rf src/main/java/com/petromirdzhunev/*/repository/jooq/*
+	# Generate new
 	mvnd -B clean generate-sources -P generate-code
 	# Putting back the files to git
-	git add src/main/java/com/petromirdzhunev/controller/*
-	git add src/main/java/com/petromirdzhunev/repository/jooq/*
+	git add src/main/java/com/petromirdzhunev/*/controller/api/*
+	git add src/main/java/com/petromirdzhunev/*/repository/jooq/*
 
 clean-database:
 	docker-compose --file ./docker/docker-compose.yaml down

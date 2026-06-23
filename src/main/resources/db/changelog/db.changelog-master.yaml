@@ -1,4 +1,4 @@
 databaseChangeLog:
   - include:
-      file: "V00001__Init.sql"
+      file: "Init.sql"
       relativeToChangelogFile: true
