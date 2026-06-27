@@ -177,6 +177,17 @@
                                     <modelPackage>com.petromirdzhunev.users.controller.model</modelPackage>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>generate-vehicle-api</id>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                                <configuration>
+                                    <inputSpec>${project.basedir}/vehicles-api.yaml</inputSpec>
+                                    <apiPackage>com.petromirdzhunev.vehicles.controller.api</apiPackage>
+                                    <modelPackage>com.petromirdzhunev.vehicles.controller.model</modelPackage>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                     <plugin>
