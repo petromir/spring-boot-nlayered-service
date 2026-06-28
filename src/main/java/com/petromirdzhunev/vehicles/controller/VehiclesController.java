@@ -2,13 +2,22 @@ package com.petromirdzhunev.vehicles.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RestController;
+
 import com.petromirdzhunev.vehicles.controller.api.VehiclesApi;
 import com.petromirdzhunev.vehicles.controller.model.VehicleCreationRequestPayload;
 import com.petromirdzhunev.vehicles.controller.model.VehicleCreationResponsePayload;
 import com.petromirdzhunev.vehicles.controller.model.VehicleResponsePayload;
 import com.petromirdzhunev.vehicles.controller.model.VehicleUpdateRequestPayload;
+import com.petromirdzhunev.vehicles.service.VehiclesService;
 
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
 public class VehiclesController implements VehiclesApi {
+
+	private final VehiclesService vehiclesService;
 
 	@Override
 	public VehicleCreationResponsePayload createVehicle(final VehicleCreationRequestPayload vehicleCreationRequestPayload) {
