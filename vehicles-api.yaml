@@ -21,14 +21,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VehicleCreationRequestPayload'
+              $ref: '#/components/schemas/VehicleRequestPayload'
       responses:
         '201':
           description: Vehicle created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VehicleCreationResponsePayload'
+                $ref: '#/components/schemas/VehicleResponsePayload'
         '401':
           description: Unauthorized
           content:
@@ -128,7 +128,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/VehicleUpdateRequestPayload'
+              $ref: '#/components/schemas/VehicleRequestPayload'
       responses:
         '200':
           description: Vehicle updated successfully
@@ -221,7 +221,7 @@ components:
           type: string
           example: "Daily driver"
 
-    VehicleCreationRequestPayload:
+    VehicleRequestPayload:
       type: object
       required:
         - type
@@ -252,45 +252,6 @@ components:
         nickname:
           type: string
           example: "Daily driver"
-
-    VehicleUpdateRequestPayload:
-      type: object
-      required:
-        - type
-        - year
-        - make
-        - model
-        - plate
-        - vin
-      properties:
-        type:
-          $ref: '#/components/schemas/VehicleType'
-        year:
-          type: integer
-          format: int32
-          example: 2023
-        make:
-          type: string
-          example: "Toyota"
-        model:
-          type: string
-          example: "Corolla"
-        plate:
-          type: string
-          example: "CB1234AB"
-        vin:
-          type: string
-          example: "JTDBR32E830000123"
-        nickname:
-          type: string
-          example: "Daily driver"
-
-    VehicleCreationResponsePayload:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
 
     VehicleType:
       type: string

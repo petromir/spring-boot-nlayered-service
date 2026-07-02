@@ -5,10 +5,8 @@
  */
 package com.petromirdzhunev.vehicles.controller.api;
 
-import com.petromirdzhunev.vehicles.controller.model.VehicleCreationRequestPayload;
-import com.petromirdzhunev.vehicles.controller.model.VehicleCreationResponsePayload;
+import com.petromirdzhunev.vehicles.controller.model.VehicleRequestPayload;
 import com.petromirdzhunev.vehicles.controller.model.VehicleResponsePayload;
-import com.petromirdzhunev.vehicles.controller.model.VehicleUpdateRequestPayload;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +28,7 @@ public interface VehiclesApi {
      * POST /api/vehicles : Create a vehicle
      * Registers a new vehicle for the authenticated user&#39;s household.
      *
-     * @param vehicleCreationRequestPayload  (required)
+     * @param vehicleRequestPayload  (required)
      * @return Vehicle created successfully (status code 201)
      *         or Unauthorized (status code 401)
      *         or Internal Server Error (status code 500)
@@ -42,8 +40,8 @@ public interface VehiclesApi {
         consumes = { "application/json" }
     )
     @ResponseStatus(HttpStatus.CREATED)
-    VehicleCreationResponsePayload createVehicle(
-         @Valid @RequestBody VehicleCreationRequestPayload vehicleCreationRequestPayload
+    VehicleResponsePayload createVehicle(
+         @Valid @RequestBody VehicleRequestPayload vehicleRequestPayload
     );
 
 
@@ -116,7 +114,7 @@ public interface VehiclesApi {
      * Replaces the mutable fields of an existing vehicle.
      *
      * @param id ID of the vehicle (required)
-     * @param vehicleUpdateRequestPayload  (required)
+     * @param vehicleRequestPayload  (required)
      * @return Vehicle updated successfully (status code 200)
      *         or Unauthorized (status code 401)
      *         or Vehicle not found (status code 404)
@@ -131,7 +129,7 @@ public interface VehiclesApi {
     @ResponseStatus(HttpStatus.OK)
     VehicleResponsePayload updateVehicle(
          @PathVariable("id") Long id,
-         @Valid @RequestBody VehicleUpdateRequestPayload vehicleUpdateRequestPayload
+         @Valid @RequestBody VehicleRequestPayload vehicleRequestPayload
     );
 
 }

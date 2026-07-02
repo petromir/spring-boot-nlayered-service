@@ -16,11 +16,11 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
- * VehicleUpdateRequestPayload
+ * VehicleRequestPayload
  */
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.23.0")
-public class VehicleUpdateRequestPayload {
+public class VehicleRequestPayload {
 
   private VehicleType type;
 
@@ -36,14 +36,14 @@ public class VehicleUpdateRequestPayload {
 
   private @Nullable String nickname;
 
-  public VehicleUpdateRequestPayload() {
+  public VehicleRequestPayload() {
     super();
   }
 
   /**
    * Constructor with only required parameters
    */
-  public VehicleUpdateRequestPayload(VehicleType type, Integer year, String make, String model, String plate, String vin) {
+  public VehicleRequestPayload(VehicleType type, Integer year, String make, String model, String plate, String vin) {
     this.type = type;
     this.year = year;
     this.make = make;
@@ -52,7 +52,7 @@ public class VehicleUpdateRequestPayload {
     this.vin = vin;
   }
 
-  public VehicleUpdateRequestPayload type(VehicleType type) {
+  public VehicleRequestPayload type(VehicleType type) {
     this.type = type;
     return this;
   }
@@ -72,7 +72,7 @@ public class VehicleUpdateRequestPayload {
     this.type = type;
   }
 
-  public VehicleUpdateRequestPayload year(Integer year) {
+  public VehicleRequestPayload year(Integer year) {
     this.year = year;
     return this;
   }
@@ -92,7 +92,7 @@ public class VehicleUpdateRequestPayload {
     this.year = year;
   }
 
-  public VehicleUpdateRequestPayload make(String make) {
+  public VehicleRequestPayload make(String make) {
     this.make = make;
     return this;
   }
@@ -112,7 +112,7 @@ public class VehicleUpdateRequestPayload {
     this.make = make;
   }
 
-  public VehicleUpdateRequestPayload model(String model) {
+  public VehicleRequestPayload model(String model) {
     this.model = model;
     return this;
   }
@@ -132,7 +132,7 @@ public class VehicleUpdateRequestPayload {
     this.model = model;
   }
 
-  public VehicleUpdateRequestPayload plate(String plate) {
+  public VehicleRequestPayload plate(String plate) {
     this.plate = plate;
     return this;
   }
@@ -152,7 +152,7 @@ public class VehicleUpdateRequestPayload {
     this.plate = plate;
   }
 
-  public VehicleUpdateRequestPayload vin(String vin) {
+  public VehicleRequestPayload vin(String vin) {
     this.vin = vin;
     return this;
   }
@@ -172,7 +172,7 @@ public class VehicleUpdateRequestPayload {
     this.vin = vin;
   }
 
-  public VehicleUpdateRequestPayload nickname(@Nullable String nickname) {
+  public VehicleRequestPayload nickname(@Nullable String nickname) {
     this.nickname = nickname;
     return this;
   }
@@ -200,14 +200,14 @@ public class VehicleUpdateRequestPayload {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    VehicleUpdateRequestPayload vehicleUpdateRequestPayload = (VehicleUpdateRequestPayload) o;
-    return Objects.equals(this.type, vehicleUpdateRequestPayload.type) &&
-        Objects.equals(this.year, vehicleUpdateRequestPayload.year) &&
-        Objects.equals(this.make, vehicleUpdateRequestPayload.make) &&
-        Objects.equals(this.model, vehicleUpdateRequestPayload.model) &&
-        Objects.equals(this.plate, vehicleUpdateRequestPayload.plate) &&
-        Objects.equals(this.vin, vehicleUpdateRequestPayload.vin) &&
-        Objects.equals(this.nickname, vehicleUpdateRequestPayload.nickname);
+    VehicleRequestPayload vehicleRequestPayload = (VehicleRequestPayload) o;
+    return Objects.equals(this.type, vehicleRequestPayload.type) &&
+        Objects.equals(this.year, vehicleRequestPayload.year) &&
+        Objects.equals(this.make, vehicleRequestPayload.make) &&
+        Objects.equals(this.model, vehicleRequestPayload.model) &&
+        Objects.equals(this.plate, vehicleRequestPayload.plate) &&
+        Objects.equals(this.vin, vehicleRequestPayload.vin) &&
+        Objects.equals(this.nickname, vehicleRequestPayload.nickname);
   }
 
   @Override
@@ -218,7 +218,7 @@ public class VehicleUpdateRequestPayload {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class VehicleUpdateRequestPayload {\n");
+    sb.append("class VehicleRequestPayload {\n");
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    year: ").append(toIndentedString(year)).append("\n");
     sb.append("    make: ").append(toIndentedString(make)).append("\n");
