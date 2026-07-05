@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.petromirdzhunev.users.service.AuthenticationService;
-import com.petromirdzhunev.users.service.UserService;
+import com.petromirdzhunev.user.service.AuthenticationService;
+import com.petromirdzhunev.user.service.UserService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

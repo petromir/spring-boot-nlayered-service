@@ -172,9 +172,9 @@
                                     <goal>generate</goal>
                                 </goals>
                                 <configuration>
-                                    <inputSpec>${project.basedir}/users-api.yaml</inputSpec>
-                                    <apiPackage>com.petromirdzhunev.users.controller.api</apiPackage>
-                                    <modelPackage>com.petromirdzhunev.users.controller.model</modelPackage>
+                                    <inputSpec>${project.basedir}/user-api.yaml</inputSpec>
+                                    <apiPackage>com.petromirdzhunev.user.controller.api</apiPackage>
+                                    <modelPackage>com.petromirdzhunev.user.controller.model</modelPackage>
                                 </configuration>
                             </execution>
                             <execution>
@@ -183,9 +183,9 @@
                                     <goal>generate</goal>
                                 </goals>
                                 <configuration>
-                                    <inputSpec>${project.basedir}/vehicles-api.yaml</inputSpec>
-                                    <apiPackage>com.petromirdzhunev.vehicles.controller.api</apiPackage>
-                                    <modelPackage>com.petromirdzhunev.vehicles.controller.model</modelPackage>
+                                    <inputSpec>${project.basedir}/vehicle-api.yaml</inputSpec>
+                                    <apiPackage>com.petromirdzhunev.vehicle.controller.api</apiPackage>
+                                    <modelPackage>com.petromirdzhunev.vehicle.controller.model</modelPackage>
                                 </configuration>
                             </execution>
                         </executions>
@@ -284,7 +284,7 @@
                                                 <excludes>databasechangelog|databasechangeloglock</excludes>
                                             </database>
                                             <target>
-                                                <packageName>com.petromirdzhunev.users.repository.jooq</packageName>
+                                                <packageName>com.petromirdzhunev.user.repository.jooq</packageName>
                                                 <directory>src/main/java</directory>
                                             </target>
                                             <generate>
