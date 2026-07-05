@@ -9,3 +9,6 @@ target/
 
 ### Environment variable
 **/.env
+
+### OpenAPI generator
+**/.openapi-generator

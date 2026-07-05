@@ -84,13 +84,13 @@ public class AuthUserRepository {
 	}
 
 	public void assertAuthUserNotExists(final String authUserEmail) {
-		boolean flowExists =
+		boolean userExists =
 				db.fetchExists(
 						db.selectOne()
 						  .from(AUTH_USER_DB_TABLE)
 						  .where(AUTH_USER_DB_TABLE.EMAIL.eq(authUserEmail)));
 
-		if (flowExists) {
+		if (userExists) {
 			throw new EntityAlreadyExistsException("Username already exists for [name=%s]");
 		}
 	}
