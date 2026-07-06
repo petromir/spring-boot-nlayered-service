@@ -101,7 +101,7 @@ src/main/java/com/petromirdzhunev/
     └── mapper/                               # UserPayloadMapper
 src/main/resources/
 ├── application.yaml                          # multi-document, profile-aware
-└── db/changelog/                             # Liquibase migrations (db.changelog-master.yaml + Init.sql)
+└── db/changelog/                             # Liquibase migrations (db.changelog-master.yaml & db definitions)
 src/test/java/com/petromirdzhunev/            # CucumberRunnerTest, CucumberSpringConfiguration, TestApplication
 src/test/resources/
 ├── features/                                 # Cucumber .feature files
@@ -126,7 +126,7 @@ Makefile                                      # init-env, build, generate-code, 
 | Run tests       | `mvn clean test`       |
 | Clean DB        | `make clean-database`  |
 
-**No lint/typecheck commands configured.** Code quality enforced via CI tests only.
+**No lint/typecheck commands configured.** Code quality is enforced via CI tests only.
 
 **Code generation profiles** (Maven `generate-code` profile):
 - **OpenAPI Generator** reads `users-api.yaml` → emits `…/controller/api/*` and `…/controller/model/*`.
