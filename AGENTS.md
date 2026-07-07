@@ -84,35 +84,42 @@ When adding a new bounded context (e.g. `orders`), follow the existing `users` m
 ## Project Structure
 
 ```
-src/main/java/com/petromirdzhunev/
-├── SpringBootNlayeredApplication.java        # entry point (@SpringBootApplication)
-├── config/                                   # cross-cutting: SecurityConfig, Jwt*, exception handler
-├── exception/                                # EntityNotFoundException, EntityAlreadyExistsException
-└── users/                                    # feature module
-    ├── controller/
-    │   ├── UserController.java               # implements UsersApi (generated)
-    │   ├── api/                              # GENERATED — OpenAPI interfaces
-    │   └── model/                            # GENERATED — OpenAPI payloads
-    ├── service/                              # UserService, AuthenticationService
-    ├── repository/
-    │   ├── AuthUserRepository.java           # jOOQ-based
-    │   └── jooq/                             # GENERATED — jOOQ table/keys classes
-    ├── entity/                               # AuthUser, AuthUserRole (immutable)
-    └── mapper/                               # UserPayloadMapper
-src/main/resources/
-├── application.yaml                          # multi-document, profile-aware
-└── db/changelog/                             # Liquibase migrations (db.changelog-master.yaml & db definitions)
-src/test/java/com/petromirdzhunev/            # CucumberRunnerTest, CucumberSpringConfiguration, TestApplication
-src/test/resources/
-├── features/                                 # Cucumber .feature files
-├── application.yaml                          # test profile config
-└── .env.test                                 # test env template (committed)
-users-api.yaml                                # OpenAPI 3.1 spec — source of truth for the API (root)
-docker/                                       # docker-compose.yaml, application/, db-migrations/ (root)
-docker/application/Dockerfile                 # app image build (multi-stage, layered JAR) (root)
-Makefile                                      # init-env, build, generate-code, clean-database (root)
-.sdkmanrc                                     # Java/mvnd versions (root)
-.env.example                                  # env template (committed; real .env is gitignored) (root)
+.
+├── src/main/java/com/petromirdzhunev/
+│   ├── SpringBootNlayeredApplication.java    # entry point (@SpringBootApplication)
+│   ├── config/                               # cross-cutting: SecurityConfig, Jwt*, exception handler
+│   ├── exception/                            # EntityNotFoundException, EntityAlreadyExistsException
+│   ├── users/                                # feature module
+│   │   ├── controller/
+│   │   │   ├── UserController.java           # implements UsersApi (generated)
+│   │   │   ├── api/                          # GENERATED — OpenAPI interfaces
+│   │   │   └── model/                        # GENERATED — OpenAPI payloads
+│   │   ├── service/                          # UserService, AuthenticationService
+│   │   ├── repository/
+│   │   │   ├── AuthUserRepository.java       # jOOQ-based
+│   │   │   └── jooq/                         # GENERATED — jOOQ table/keys classes
+│   │   ├── entity/                           # AuthUser, AuthUserRole (immutable)
+│   │   └── mapper/                           # UserPayloadMapper
+│   └── vehicle/                              # feature module (same layering as users)
+│       ├── controller/                       # VehicleController + generated api/ & model/
+│       ├── service/                          # VehicleService
+│       ├── repository/                       # VehicleRepository + generated jooq/
+│       ├── entity/                           # VehicleEntity (immutable)
+│       └── mapper/                           # VehiclePayloadMapper
+├── src/main/resources/
+│   ├── application.yaml                      # multi-document, profile-aware
+│   └── db/changelog/                         # Liquibase migrations (db.changelog-master.yaml & db definitions)
+├── src/test/java/com/petromirdzhunev/        # CucumberRunnerTest, CucumberSpringConfiguration, TestApplication
+├── src/test/resources/
+│   ├── features/                             # Cucumber .feature files
+│   ├── application.yaml                      # test profile config
+│   └── .env.test                             # test env template (committed)
+├── users-api.yaml                            # OpenAPI 3.1 spec — source of truth for the API
+├── docker/                                   # docker-compose.yaml, application/, db-migrations/
+│   └── application/Dockerfile                # app image build (multi-stage, layered JAR)
+├── Makefile                                  # init-env, build, generate-code, clean-database
+├── .sdkmanrc                                 # Java/mvnd versions
+└── .env.example                              # env template (committed; real .env is gitignored)
 ```
 
 ## Build, Run & Code Generation
