@@ -17,8 +17,8 @@ import org.jooq.InsertValuesStep2;
 import org.jooq.Record;
 import org.springframework.stereotype.Component;
 
-import com.petromirdzhunev.exception.EntityAlreadyExistsException;
-import com.petromirdzhunev.exception.EntityNotFoundException;
+import com.petromirdzhunev.domain.core.exception.EntityAlreadyExistsException;
+import com.petromirdzhunev.domain.core.exception.EntityNotFoundException;
 import com.petromirdzhunev.user.entity.AuthUser;
 import com.petromirdzhunev.user.entity.AuthUserRole;
 

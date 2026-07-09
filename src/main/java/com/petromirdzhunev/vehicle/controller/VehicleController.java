@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.petromirdzhunev.vehicle.controller.api.VehiclesApi;
+import com.petromirdzhunev.vehicle.controller.api.VehicleApi;
 import com.petromirdzhunev.vehicle.controller.model.VehicleRequestPayload;
 import com.petromirdzhunev.vehicle.controller.model.VehicleResponsePayload;
 import com.petromirdzhunev.vehicle.entity.VehicleEntity;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class VehicleController implements VehiclesApi {
+public class VehicleController implements VehicleApi {
 
 	private final VehicleService vehicleService;
 	private final VehiclePayloadMapper vehiclePayloadMapper;

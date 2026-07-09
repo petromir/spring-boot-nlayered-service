@@ -5,7 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.petromirdzhunev.user.controller.api.UsersApi;
+import com.petromirdzhunev.user.controller.api.UserApi;
 import com.petromirdzhunev.user.controller.model.LoginRequestPayload;
 import com.petromirdzhunev.user.controller.model.LoginResponsePayload;
 import com.petromirdzhunev.user.controller.model.UserCreationRequestPayload;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController implements UsersApi {
+public class UserController implements UserApi {
 
 	private final UserService userService;
 	private final UserPayloadMapper userPayloadMapper;
